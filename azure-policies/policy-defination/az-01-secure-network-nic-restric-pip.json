@@ -1,0 +1,49 @@
+{
+    "type": "Microsoft.Authorization/policyDefinitions",
+    "scope": null,
+    "displayName":"az-01-secure-network-nic-restric-pip",
+    "properties": {
+      "policyType": "Custom",
+      "mode": "All",
+      "displayName":"az-01-secure-network-nic-restric-pip",
+      "description": "az-01-secure-network-nic-restric-pip ",
+      "metadata": {
+        "version": "2.0",
+        "category": "Network"
+      },
+      "parameters": {
+        "effect": {
+          "type": "String",
+          "defaultValue": "Deny",
+          "allowedValues": [
+            "Audit",
+            "Deny",
+            "Disabled"
+          ],
+          "metadata": {
+            "displayName": "Effect",
+            "description": "Enable or Disable the execution of the Policy"
+          }
+        }
+      },
+      "policyRule": {
+        "if": {
+          "allOf": [
+            {
+              "field": "type",
+              "equals": "Microsoft.Network/networkInterfaces"
+            },
+            {
+              "not": {
+                "field": "Microsoft.Network/networkInterfaces/ipconfigurations[*].publicIpAddress.id",
+                "notLike": "*"
+              }
+            }
+          ]
+        },
+        "then": {
+          "effect": "[parameters('effect')]"
+        }
+      }
+    }
+  }
